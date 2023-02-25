@@ -28,14 +28,40 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
 
-        $this->routes(function () {
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api.php'));
+        $this->mapApiRoutes();
+        $this->mapWebRoutes();
+        $this->mapAdminRoutes();
+        $this->mapMobileRoutes();
+    }
 
-            Route::middleware('web')
-                ->group(base_path('routes/web.php'));
-        });
+    protected function mapApiRoutes()
+    {
+        Route::prefix('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapAdminRoutes()
+    {
+        Route::middleware(['auth:sanctum', 'abilities:is-admin'])
+            ->namespace('Admin')
+            ->prefix('api/admin')
+            ->group(base_path('routes/admin.php'));
+    }
+
+    protected function mapMobileRoutes()
+    {
+        Route::middleware(['auth:sanctum', 'abilities:is-customer'])
+            ->namespace('Mobile')
+            ->prefix('api/mobile')
+            ->group(base_path('routes/mobile.php'));
+    }
+
+    protected function mapWebRoutes()
+    {
+        Route::middleware('web')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
     }
 
     /**

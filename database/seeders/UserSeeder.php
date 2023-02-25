@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -17,18 +14,17 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        $admin = new Admin();
+        $admin = new User();
 
         $admin->name = 'Admin';
         $admin->email = 'admin@admin.com';
-        $admin->username = 'admin.admin';
+        $admin->phone_number = '0000000000';
         $admin->password = bcrypt('password');
-        $admin->remember_token = Str::random(10);
 
         $admin->save();
 
-        $superAdminRole = Role::create(['guard_name' => 'admin', 'name' => 'super-admin', 'display_name' => 'Super Admin']);
-        $superAdminRole->syncPermissions(config('permission.admin-permissions'));
-        $admin->syncRoles([$superAdminRole]);
+//        $superAdminRole = Role::create(['guard_name' => 'admin', 'name' => 'super-admin', 'display_name' => 'Super Admin']);
+//        $superAdminRole->syncPermissions(config('permission.admin-permissions'));
+//        $admin->syncRoles([$superAdminRole]);
     }
 }

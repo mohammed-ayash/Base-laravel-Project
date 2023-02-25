@@ -2,7 +2,6 @@
 
 namespace App\Http\QueryFilter;
 
-use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Builder;
@@ -35,15 +34,16 @@ class QueryFilter
      * @param  null  $perPage
      * @return mixed
      */
-    public function apply(Builder $builder, $perPage = null)
+    public function apply(Builder $builder, $filterable = [], $perPage = null)
     {
         $this->builder = $builder;
 
         foreach ($this->filters() as $name => $value)
-            if (method_exists($this, $name) && $value !== '0' && $value !== '')
+            if ($filterable[$name]){
+                $method = $filterable[$name] . 'Operation';
+                call_user_func_array([$this, $method], array_filter([$name, $value]));
+            } else if (method_exists($this, $name) && $value !== '0' && $value !== '')
                 call_user_func_array([$this, $name], array_filter([$value]));
-            else if(method_exists($this, $name) && $value === '0' && $value !== '')
-                call_user_func_array([$this, $name], [$value]);
 
         // apply sort
         foreach ($this->sorts() as $name => $type)
@@ -83,5 +83,31 @@ class QueryFilter
                 'case '. $this->builder->getModel()->getTable().'.id '.
                 str_repeat("WHEN ? THEN 1 ", count($ids)). 'END DESC'
                 , $ids);
+    }
+
+
+    public function equalOperation($key,$value)
+    {
+        return $this->builder->where($key, $value);
+    }
+
+    public function greaterOperation($key,$value)
+    {
+        return $this->builder->where($key,'<', $value);
+    }
+
+    public function lessOperation($key,$value)
+    {
+        return $this->builder->where($key,'>', $value);
+    }
+
+    public function likeOperation($key,$value)
+    {
+        return $this->builder->where($key,'like', $value);
+    }
+
+    public function isOperation($key,$value)
+    {
+        return $this->builder->where($key,'is', $value);
     }
 }

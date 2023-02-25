@@ -26,7 +26,7 @@ class LoginAdminRequest extends FormRequest
         switch($this->method()) {
             case 'POST':
                 return [
-                    'email' => 'required|exists:admins',
+                    'email' => 'required|email',
                     'password' => 'required|min:5',
                 ];
             default:break;
