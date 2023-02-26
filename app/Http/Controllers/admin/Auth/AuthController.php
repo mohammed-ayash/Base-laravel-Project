@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\admin\Auth;
+namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Requests\Admin\LoginAdminRequest;
 use App\Http\Traits\Responsible;

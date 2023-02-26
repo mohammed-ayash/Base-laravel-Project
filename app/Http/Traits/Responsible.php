@@ -23,7 +23,7 @@ trait Responsible
     {
         return response()->json([
             'result' => 'error',
-            'error_des' => $message,
+            'error_message' => $message,
             'error_validation' => $validationError,
             'date' => date('Y-m-d')
         ], $status);
@@ -34,7 +34,7 @@ trait Responsible
         return response()->json([
             'result' => 'error',
             'content' => [],
-            'error_des' => $message,
+            'error_message' => $message,
             'error_code' => -1,
             'date' => date('Y-m-d')
         ]);
@@ -45,7 +45,7 @@ trait Responsible
         return response()->json([
             'result' => 'success',
             'content' => [],
-            'error_des' => $message,
+            'error_message' => $message,
             'error_code' => 0,
             'date' => date('Y-m-d')
         ]);
@@ -56,7 +56,7 @@ trait Responsible
         return response()->json([
             'result' => 'error',
             'content' => $message,
-            'error_des' => $message,
+            'error_message' => $message,
             'error_code' => 1,
             'date' => date('Y-m-d')
         ], 200);

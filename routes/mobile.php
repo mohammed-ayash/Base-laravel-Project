@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\mobile\Auth\AuthController;
+use App\Http\Controllers\Mobile\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdminRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,27 +23,28 @@ class AdminRequest extends FormRequest
      */
     public function rules(): array
     {
-        switch($this->method()) {
+        switch ($this->method()) {
             case 'GET':
             case 'DELETE':
                 return [];
             case 'POST':
                 return [
                     'name' => 'required|max:100',
-                    'username' => 'required|max:100|unique:admins',
-                    'email' => 'required|email|unique:admins',
+                    'email' => 'required|email|unique:users',
+                    'phone_number' => 'required|min:10',
                     'password' => 'required|confirmed|min:6',
                 ];
             case 'PUT':
             case 'PATCH':
-            $admin = $this->route()->admin;
-            return [
-                'name' => 'required|max:100',
-                'username' => 'required|max:100|unique:admins,username,'.$admin->id,
-                'email' => 'required|email|unique:admins,email,'.$admin->id,
-                'password' => 'nullable|confirmed|min:6',
-            ];
-            default:break;
+                $user = $this->route()->user;
+                return [
+                    'name' => 'required|max:100',
+                    'email' => 'required|email|unique:users,email,' . $user,
+                    'phone_number' => 'required|min:10|unique:users,phone_number,'. $user,
+                    'password' => 'nullable|confirmed|min:6',
+                ];
+            default:
+                break;
         }
         return [];
 
@@ -59,7 +60,7 @@ class AdminRequest extends FormRequest
         return [
             'name.required' => 'A name with  is required',
             'username.required' => 'A username is required',
-            'email.required'  => 'An email is required',
+            'email.required' => 'An email is required',
         ];
     }
 }

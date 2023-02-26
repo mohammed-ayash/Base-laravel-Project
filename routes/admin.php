@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\admin\Auth\AuthController;
+use App\Http\Controllers\Admin\Auth\AuthController;
+use App\Http\Controllers\Admin\{UserController,VerificationCodeController};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,4 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('profile', [AuthController::class, 'profile']);
+
+Route::apiResource('users', UserController::class);
 

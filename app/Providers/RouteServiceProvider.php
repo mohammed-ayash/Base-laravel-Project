@@ -44,7 +44,6 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapAdminRoutes()
     {
         Route::middleware(['auth:sanctum', 'abilities:is-admin'])
-            ->namespace('Admin')
             ->prefix('api/admin')
             ->group(base_path('routes/admin.php'));
     }
@@ -52,7 +51,6 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapMobileRoutes()
     {
         Route::middleware(['auth:sanctum', 'abilities:is-customer'])
-            ->namespace('Mobile')
             ->prefix('api/mobile')
             ->group(base_path('routes/mobile.php'));
     }
