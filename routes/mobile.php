@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\admin\Auth\AuthController as AdminAuthController;
 use App\Http\Controllers\mobile\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,13 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//admin login
-Route::controller(AdminAuthController::class)->group(function(){
-    Route::post('admin/login',  'login');
-});
 
-//Mobile login
-Route::controller(AuthController::class)->group(function(){
-    Route::post('/otp/login', 'generateOtpCode');
-    Route::post('/otp/verification', 'verifyOtpLogin');
-});
+Route::get('profile', [AuthController::class, 'profile']);
+
