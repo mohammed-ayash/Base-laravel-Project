@@ -19,19 +19,19 @@ class QueryFilter
 
     /**
      * QueryFilter constructor.
-     * @param  Request  $request
+     * @param Request $request
      */
     public function __construct(Request $request)
     {
         $this->request = $request;
 
-        if($this->validationArray)
+        if ($this->validationArray)
             Validator::validate($request->all(), array_merge($this->validationArray, ['sorts' => 'array']));
     }
 
     /**
-     * @param  Builder  $builder
-     * @param  null  $perPage
+     * @param Builder $builder
+     * @param null $perPage
      * @return mixed
      */
     public function apply(Builder $builder, $filterable = [], $perPage = null)
@@ -39,7 +39,7 @@ class QueryFilter
         $this->builder = $builder;
 
         foreach ($this->filters() as $name => $value)
-            if ($filterable[$name]){
+            if (isset($filterable[$name])) {
                 $method = $filterable[$name] . 'Operation';
                 call_user_func_array([$this, $method], array_filter([$name, $value]));
             } else if (method_exists($this, $name) && $value !== '0' && $value !== '')
@@ -47,19 +47,16 @@ class QueryFilter
 
         // apply sort
         foreach ($this->sorts() as $name => $type)
-            if(in_array($type, ['asc', 'desc']))
-            {
-                if(method_exists($this, Str::camel(Str::replace('.', ' ', $name)).'Sort'))
-                {
-                    call_user_func_array([$this, Str::camel(Str::replace('.', ' ', $name)).'Sort'], array_filter([$type]));
-                }
-                elseif(is_array($this->builder->getModel()->getSorts()) and in_array($name, $this->builder->getModel()->getSorts())) {
+            if (in_array($type, ['asc', 'desc'])) {
+                if (method_exists($this, Str::camel(Str::replace('.', ' ', $name)) . 'Sort')) {
+                    call_user_func_array([$this, Str::camel(Str::replace('.', ' ', $name)) . 'Sort'], array_filter([$type]));
+                } elseif (is_array($this->builder->getModel()->getSorts()) and in_array($name, $this->builder->getModel()->getSorts())) {
                     $this->builder->orderBy($name, $type);
                 }
             }
 
         // handling pagination
-        if($perPage) return $this->builder->paginate($perPage)->appends(request()->query());
+        if ($perPage) return $this->builder->paginate($perPage)->appends(request()->query());
 
         return $this->builder;
     }
@@ -78,36 +75,38 @@ class QueryFilter
     {
         return $this->builder
             ->whereRaw('1 = 1')
-            ->orWhereIn($this->builder->getModel()->getTable().'.id', $ids)
+            ->orWhereIn($this->builder->getModel()->getTable() . '.id', $ids)
             ->orderByRaw(
-                'case '. $this->builder->getModel()->getTable().'.id '.
-                str_repeat("WHEN ? THEN 1 ", count($ids)). 'END DESC'
+                'case ' . $this->builder->getModel()->getTable() . '.id ' .
+                str_repeat("WHEN ? THEN 1 ", count($ids)) . 'END DESC'
                 , $ids);
     }
 
 
-    public function equalOperation($key,$value)
+    public function equalOperation($key, $value)
     {
         return $this->builder->where($key, $value);
     }
 
-    public function greaterOperation($key,$value)
+    public function greaterOperation($key, $value)
     {
-        return $this->builder->where($key,'<', $value);
+        return $this->builder->where($key, '<', $value);
     }
 
-    public function lessOperation($key,$value)
+    public function lessOperation($key, $value)
     {
-        return $this->builder->where($key,'>', $value);
+        return $this->builder->where($key, '>', $value);
     }
 
-    public function likeOperation($key,$value)
+    public function likeOperation($key, $value)
     {
-        return $this->builder->where($key,'like', $value);
+        $search = '%' . convertToSeparatedTokensForLike($value);
+
+        return $this->builder->where($key, 'like', $search);
     }
 
-    public function isOperation($key,$value)
+    public function isOperation($key, $value)
     {
-        return $this->builder->where($key,'is', $value);
+        return $this->builder->where($key, 'is', $value);
     }
 }

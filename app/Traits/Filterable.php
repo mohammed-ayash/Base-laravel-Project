@@ -15,7 +15,6 @@ trait Filterable
      */
     public function scopeFilter($query, QueryFilter $filter, bool $execute = true)
     {
-
         // if execute is false then no execute on this query at all
         if(! $execute)
             return $filter->apply($query, $this->filterable);
@@ -25,7 +24,7 @@ trait Filterable
             return ['data'=> $filter->apply($query, $this->filterable)->get()];
 
         // apply pagination with default value of 8
-        elseif($perPage = request()->get('perPage') ?? 8)
+        elseif($perPage = request()->get('perPage') ?? 10)
             return $filter->apply($query, $this->filterable, $perPage);
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,12 +11,13 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, Filterable;
 
     const ABILITIES = [
         'admin' => 'is-admin',
         'customer' => 'is-customer'
     ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -40,6 +42,20 @@ class User extends Authenticatable
         'phone_verified_at' => 'datetime',
         'created_at' => 'datetime:Y-m-d H:i:s',
     ];
+
+    /**
+     * The attributes that use as filter.
+     *
+     * @var array<int, string>
+     */
+    protected $filterable = [
+        'name' => 'like',
+        'email' => 'like',
+        'phone_number' => 'like',
+    ];
+
+    protected $sorts = ['id', 'name', 'email', 'phone_number', 'created_at'];
+
 
     public function userPhoneVerified(): bool
     {

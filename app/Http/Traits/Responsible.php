@@ -3,6 +3,7 @@
 namespace App\Http\Traits;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 trait Responsible
 {
@@ -13,8 +14,14 @@ trait Responsible
             'content' => $content,
         ];
 
-        if (!empty($paginator))
-            $res['paginator'] = $paginator;
+        if ($paginator instanceof LengthAwarePaginator)
+            $res['paginator'] = [
+                'total_count' => $paginator->total(),
+                'limit' => $paginator->perPage(),
+                'total_page' => ceil($paginator->total() / $paginator->perPage()),
+                'current_page' => $paginator->currentPage(),
+            ];
+
 
         return response()->json($res, 200);
     }

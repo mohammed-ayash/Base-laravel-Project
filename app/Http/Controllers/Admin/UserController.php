@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\QueryFilter\Models\Dashboard\UserFilter;
 use App\Http\Requests\UserRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Traits\Responsible;
@@ -26,11 +27,11 @@ class UserController extends Controller
      *
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(UserFilter $userFilter): JsonResponse
     {
-        $users = $this->userService->getAdmins();
+        $users = $this->userService->getUsers($userFilter);
 
-        return $this->respondSuccess(UserResource::collection($users));
+        return $this->respondSuccess(UserResource::collection($users), $users);
     }
 
     /**

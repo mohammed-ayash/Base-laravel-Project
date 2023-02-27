@@ -3,6 +3,7 @@
 namespace App\Service;
 
 
+use App\Http\QueryFilter\Models\Dashboard\UserFilter;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -65,8 +66,8 @@ class UserService
         $admin->delete();
     }
 
-    public function getAdmins()
+    public function getUsers(UserFilter $userFilter)
     {
-        return User::orderBy('created_at')->get();
+        return User::filter($userFilter);
     }
 }
