@@ -1,1 +1,1 @@
-import './bootstrap';
+import "./Dashboard/main.jsx";
